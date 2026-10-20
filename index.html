@@ -19,7 +19,7 @@
       box-sizing: border-box;
       user-select: none;
       -webkit-user-select: none;
-      touch-action: manipulation;
+      touch-action: none; /* 터치 스크롤 방지 및 드래그 최적화 */
     }
 
     body {
@@ -324,6 +324,7 @@
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.08);
       transition: transform 0.2s;
+      touch-action: none;
     }
 
     .money-item:active {
@@ -348,6 +349,7 @@
       font-size: 1.1rem;
       font-weight: bold;
       color: #495057;
+      pointer-events: none;
     }
 
     .admin-modal {
@@ -803,6 +805,11 @@
     function handlePointerDown(e, value) {
       e.preventDefault();
       
+      // 전자칠판 터치 감도 향상을 위한 포인터 캡처
+      if (e.target.setPointerCapture) {
+        try { e.target.setPointerCapture(e.pointerId); } catch(err) {}
+      }
+
       activeGhost = document.createElement('img');
       activeGhost.src = MONEY_IMAGES[value];
       activeGhost.className = `dragging-ghost ${value === 10000 ? 'is-10000' : ''}`;
@@ -811,10 +818,12 @@
       moveGhost(e);
 
       const onPointerMove = (ev) => {
+        ev.preventDefault();
         moveGhost(ev);
       };
 
       const onPointerUp = (ev) => {
+        ev.preventDefault();
         window.removeEventListener('pointermove', onPointerMove);
         window.removeEventListener('pointerup', onPointerUp);
 
@@ -834,13 +843,17 @@
         }
       };
 
-      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointermove', onPointerMove, { passive: false });
       window.addEventListener('pointerup', onPointerUp);
     }
 
     function handlePlacedMoneyDrag(e, id, value) {
       e.stopPropagation();
       e.preventDefault();
+
+      if (e.target.setPointerCapture) {
+        try { e.target.setPointerCapture(e.pointerId); } catch(err) {}
+      }
 
       activeGhost = document.createElement('img');
       activeGhost.src = MONEY_IMAGES[value];
@@ -850,6 +863,7 @@
       moveGhost(e);
 
       const onPointerMove = (ev) => {
+        ev.preventDefault();
         moveGhost(ev);
         const delRect = deleteZone.getBoundingClientRect();
         if (
@@ -865,6 +879,7 @@
       };
 
       const onPointerUp = (ev) => {
+        ev.preventDefault();
         window.removeEventListener('pointermove', onPointerMove);
         window.removeEventListener('pointerup', onPointerUp);
         deleteZone.classList.remove('drag-over');
@@ -885,7 +900,7 @@
         }
       };
 
-      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointermove', onPointerMove, { passive: false });
       window.addEventListener('pointerup', onPointerUp);
     }
 
