@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>특수학급 화폐 학습 앱</title>
+  <title>특수교육 화폐 학습 앱</title>
   <style>
     :root {
       --primary-color: #4A90E2;
       --secondary-color: #50E3C2;
       --accent-color: #FF6B6B;
       --bg-color: #F8F9FA;
-      --panel-bg: #FFFFFF;
       --border-color: #E0E0E0;
       --text-color: #333333;
     }
@@ -19,7 +18,7 @@
       box-sizing: border-box;
       user-select: none;
       -webkit-user-select: none;
-      touch-action: none; /* 터치 스크롤 방지 및 드래그 최적화 */
+      touch-action: none;
     }
 
     body {
@@ -32,6 +31,66 @@
       overflow: hidden;
     }
 
+    .hidden { display: none !important; }
+
+    /* 홈 화면 스타일 */
+    .home-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #E8F1F5 0%, #E3E8EE 100%);
+      padding: 20px;
+    }
+
+    .home-title {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: #1D3557;
+      margin-bottom: 10px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .home-subtitle {
+      font-size: 1.4rem;
+      color: #457B9D;
+      margin-bottom: 40px;
+    }
+
+    .menu-cards {
+      display: flex;
+      gap: 25px;
+      max-width: 1000px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .menu-card {
+      flex: 1;
+      background: white;
+      border-radius: 24px;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 3px solid transparent;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+      border-color: #4A90E2;
+    }
+
+    .menu-icon { font-size: 4.5rem; margin-bottom: 15px; }
+    .menu-card-title { font-size: 1.8rem; font-weight: bold; color: #1D3557; margin-bottom: 10px; }
+    .menu-card-desc { font-size: 1.05rem; color: #6C757D; text-align: center; line-height: 1.4; }
+
+    /* 메인 앱 스타일 */
     .app-container {
       display: flex;
       width: 100vw;
@@ -40,31 +99,38 @@
     }
 
     .left-panel {
-      flex: 3;
+      flex: 2.2;
       display: flex;
       flex-direction: column;
       padding: 15px;
-      gap: 15px;
+      gap: 12px;
       background-color: #F0F4F8;
       border-right: 3px solid var(--border-color);
       position: relative;
     }
 
     .right-panel {
-      flex: 1;
+      flex: 1.3;
       display: flex;
       flex-direction: column;
-      padding: 15px;
+      padding: 12px;
       background-color: #E3E8EE;
-      gap: 15px;
+      gap: 8px;
       align-items: center;
       justify-content: center;
       box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+      overflow-y: hidden;
     }
 
     .top-bar {
       display: flex;
       justify-content: space-between;
+      align-items: center;
+    }
+
+    .top-bar-left, .top-bar-right {
+      display: flex;
+      gap: 10px;
       align-items: center;
     }
 
@@ -84,39 +150,17 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
-    .btn-hint {
-      background-color: #FFD166;
-      color: #5C4000;
-    }
-
-    .btn-admin {
-      background-color: #6C757D;
-      color: white;
-      font-size: 0.95rem;
-    }
-
-    .btn-next-top {
-      background-color: #2EC4B6;
-      color: white;
-      font-size: 1.1rem;
-    }
-
-    .btn-action {
-      background-color: #4D96FF;
-      color: white;
-      font-size: 1.2rem;
-      padding: 12px 24px;
-    }
-
-    .btn-reset {
-      background-color: #FF6B6B;
-      color: white;
-    }
+    .btn-home { background-color: #457B9D; color: white; }
+    .btn-hint { background-color: #FFD166; color: #5C4000; }
+    .btn-admin { background-color: #6C757D; color: white; font-size: 0.95rem; }
+    .btn-next-top { background-color: #2EC4B6; color: white; font-size: 1.1rem; }
+    .btn-action { background-color: #4D96FF; color: white; font-size: 1.2rem; padding: 12px 24px; }
+    .btn-reset { background-color: #FF6B6B; color: white; }
 
     .question-card {
       background: white;
       border-radius: 16px;
-      padding: 15px 20px;
+      padding: 12px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -124,23 +168,9 @@
       border: 2px solid #D0D7DE;
     }
 
-    .question-info {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .question-title {
-      font-size: 1.1rem;
-      color: #666;
-      margin-bottom: 4px;
-    }
-
-    .question-amount {
-      font-size: 2.3rem;
-      font-weight: 800;
-      color: #1D3557;
-    }
+    .question-info { display: flex; flex-direction: column; align-items: flex-start; }
+    .question-title { font-size: 1.05rem; color: #666; margin-bottom: 2px; }
+    .question-amount { font-size: 2rem; font-weight: 800; color: #1D3557; }
 
     .drop-zone-container {
       flex: 1;
@@ -158,29 +188,22 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 20px;
+      padding: 10px 20px;
       background-color: #E8F1F5;
       border-bottom: 2px solid #D0D7DE;
     }
 
-    .current-sum {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #2B2D42;
-    }
-
-    .current-sum.exceeded {
-      color: #E63946;
-    }
+    .current-sum { font-size: 1.4rem; font-weight: bold; color: #2B2D42; }
+    .current-sum.exceeded { color: #E63946; }
 
     .drop-zone {
       flex: 1;
-      padding: 20px;
+      padding: 15px;
       display: flex;
       flex-wrap: wrap;
       align-content: center;
       justify-content: center;
-      gap: 18px;
+      gap: 15px;
       overflow-y: auto;
       position: relative;
     }
@@ -197,33 +220,40 @@
       border-radius: 10px;
     }
 
-    .money-slot.is-10000 {
-      width: 240px;
+    .money-slot.is-coin { width: 110px; height: 110px; border-radius: 50%; }
+    .money-slot.is-10000, .money-slot.is-50000 { width: 230px; }
+
+    .money-slot.hint-border-coin {
+      border: 3px dashed #FF9F1C !important;
+      border-radius: 50% !important;
+      background-color: #FFF9EC !important;
+    }
+
+    .money-slot.hint-border-bill {
+      border: 3px dashed #FF9F1C !important;
+      border-radius: 10px !important;
+      background-color: #FFF9EC !important;
     }
 
     .hint-money-img {
       position: absolute;
-      max-height: 95px;
-      max-width: 195px;
+      max-height: 90px;
+      max-width: 185px;
       width: auto;
       height: auto;
       opacity: 0.45;
-      filter: grayscale(20%);
-      border: 2px dashed #FF9F1C;
-      border-radius: 6px;
+      filter: grayscale(10%);
       pointer-events: none;
       z-index: 1;
     }
 
-    .hint-money-img.is-10000 {
-      max-height: 110px;
-      max-width: 225px;
-    }
+    .hint-money-img.is-coin { max-height: 85px; max-width: 85px; }
+    .hint-money-img.is-10000, .hint-money-img.is-50000 { max-height: 100px; max-width: 210px; }
 
     .placed-money {
       position: absolute;
-      max-height: 95px;
-      max-width: 195px;
+      max-height: 90px;
+      max-width: 185px;
       width: auto;
       height: auto;
       cursor: pointer;
@@ -233,20 +263,15 @@
       border-radius: 6px;
     }
 
-    .placed-money.is-10000 {
-      max-height: 110px;
-      max-width: 225px;
-    }
-
-    .placed-money:hover {
-      transform: scale(1.05);
-    }
+    .placed-money.is-coin { max-height: 85px; max-width: 85px; border-radius: 50%; }
+    .placed-money.is-10000, .placed-money.is-50000 { max-height: 100px; max-width: 210px; }
+    .placed-money:hover { transform: scale(1.05); }
 
     .success-banner {
       background-color: #D4EDDA;
       border-bottom: 2px solid #C3E6CB;
       color: #155724;
-      padding: 15px 20px;
+      padding: 12px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -254,32 +279,20 @@
       animation: slideDown 0.3s ease-out;
     }
 
-    .success-banner.hidden {
-      display: none;
+    .success-banner.wrong-banner {
+      background-color: #F8D7DA;
+      border-bottom: 2px solid #F5C6CB;
+      color: #721C24;
     }
 
-    .success-text {
-      font-size: 1.4rem;
-      font-weight: bold;
-    }
-
-    .success-buttons {
-      display: flex;
-      gap: 10px;
-    }
-
-    .btn-alt {
-      background-color: #FF9F1C;
-      color: white;
-    }
-
-    .btn-next {
-      background-color: #2EC4B6;
-      color: white;
-    }
+    .success-banner.hidden { display: none; }
+    .success-text { font-size: 1.3rem; font-weight: bold; }
+    .success-buttons { display: flex; gap: 10px; }
+    .btn-alt { background-color: #FF9F1C; color: white; }
+    .btn-next { background-color: #2EC4B6; color: white; }
 
     .delete-zone {
-      height: 70px;
+      height: 60px;
       background-color: #FFE5E5;
       border: 2px dashed #FF6B6B;
       border-radius: 12px;
@@ -287,143 +300,67 @@
       align-items: center;
       justify-content: center;
       color: #D90429;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: bold;
       gap: 10px;
       transition: background-color 0.2s;
     }
 
-    .delete-zone.drag-over {
-      background-color: #FFB3B3;
-      scale: 1.02;
-    }
+    .delete-zone.drag-over { background-color: #FFB3B3; scale: 1.02; }
 
-    .palette-title {
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: #2B2D42;
-      margin-bottom: 5px;
-    }
-
+    .palette-title { font-size: 1.2rem; font-weight: bold; color: #2B2D42; margin-bottom: 6px; }
+    
     .money-palette {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
       width: 100%;
       align-items: center;
+      justify-items: center;
     }
 
     .money-item {
-      width: 90%;
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      cursor: grab;
+      justify-content: center;
+      cursor: pointer;
       background: white;
-      padding: 10px;
+      padding: 6px;
       border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
       transition: transform 0.2s;
       touch-action: none;
     }
 
-    .money-item:active {
-      cursor: grabbing;
-      transform: scale(0.98);
-    }
+    .money-item:active { cursor: grabbing; transform: scale(0.96); }
 
-    .money-img {
-      width: 100%;
-      height: auto;
-      max-height: 100px;
-      object-fit: contain;
-      pointer-events: none;
-    }
+    .money-img { width: 100%; height: auto; max-height: 62px; object-fit: contain; pointer-events: none; }
+    .money-img.is-coin { max-height: 52px; }
 
-    .money-img.is-10000 {
-      max-height: 115px;
-    }
-
-    .money-label {
-      margin-top: 6px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #495057;
-      pointer-events: none;
-    }
+    .money-label { margin-top: 2px; font-size: 0.95rem; font-weight: bold; color: #495057; pointer-events: none; }
 
     .admin-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 100;
     }
 
-    .admin-modal.hidden {
-      display: none;
-    }
-
-    .admin-content {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      width: 400px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    }
-
-    .admin-title {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 20px;
-      color: #1D3557;
-    }
-
-    .level-options {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 25px;
-    }
+    .admin-content { background: white; padding: 25px 30px; border-radius: 20px; width: 440px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+    .admin-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 18px; color: #1D3557; }
+    .level-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
 
     .level-btn {
-      padding: 12px;
-      font-size: 1.1rem;
-      text-align: left;
-      border: 2px solid #E0E0E0;
-      border-radius: 10px;
-      background: #F8F9FA;
-      cursor: pointer;
+      padding: 12px; font-size: 1.05rem; text-align: left; border: 2px solid #E0E0E0;
+      border-radius: 10px; background: #F8F9FA; cursor: pointer;
     }
-
-    .level-btn.active {
-      border-color: #4A90E2;
-      background-color: #E8F1F5;
-      font-weight: bold;
-      color: #1D3557;
-    }
+    .level-btn.active { border-color: #4A90E2; background-color: #E8F1F5; font-weight: bold; color: #1D3557; }
 
     .dragging-ghost {
-      position: fixed;
-      pointer-events: none;
-      z-index: 1000;
-      opacity: 0.85;
-      transform: translate(-50%, -50%);
-      max-height: 95px;
-      max-width: 195px;
-      width: auto;
-      height: auto;
+      position: fixed; pointer-events: none; z-index: 1000; opacity: 0.85;
+      transform: translate(-50%, -50%); max-height: 85px; max-width: 180px; width: auto; height: auto;
     }
-
-    .dragging-ghost.is-10000 {
-      max-height: 115px;
-      max-width: 230px;
-    }
+    .dragging-ghost.is-coin { max-height: 75px; max-width: 75px; }
 
     @keyframes slideDown {
       from { transform: translateY(-100%); }
@@ -433,17 +370,46 @@
 </head>
 <body>
 
-  <div class="app-container">
+  <!-- 홈 화면 -->
+  <div id="homeScreen" class="home-screen">
+    <div class="home-title">🪙 특수교육 화폐 학습 앱 💵</div>
+    <div class="home-subtitle">원하는 학습 모드를 선택해 주세요</div>
+    <div class="menu-cards">
+      <div class="menu-card" onclick="startCategory('coin')">
+        <div class="menu-icon">🪙</div>
+        <div class="menu-card-title">동전 학습</div>
+        <div class="menu-card-desc">동전 구별하기, 단일 동전 찾기,<br>1,000원 이하 금액 만들기</div>
+      </div>
+      <div class="menu-card" onclick="startCategory('bill')">
+        <div class="menu-icon">💵</div>
+        <div class="menu-card-title">지폐 학습</div>
+        <div class="menu-card-desc">단일 지폐 찾기, 1만원 이하,<br>2만원 이하, 10만원 이하 만들기</div>
+      </div>
+      <div class="menu-card" onclick="startCategory('calc')">
+        <div class="menu-icon">🛍️</div>
+        <div class="menu-card-title">화폐 계산</div>
+        <div class="menu-card-desc">지폐+동전 함께 세기, 거스름돈 계산</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 메인 앱 화면 -->
+  <div id="appContainer" class="app-container hidden">
     <div class="left-panel">
       <div class="top-bar">
-        <button class="btn btn-hint" id="hintBtn" onclick="toggleHint()">💡 힌트 보기</button>
-        <button class="btn btn-admin" onclick="openAdmin()">⚙️ 관리자 설정</button>
+        <div class="top-bar-left">
+          <button class="btn btn-home" onclick="goHome()">🏠 처음으로</button>
+          <button class="btn btn-hint" id="hintBtn" onclick="toggleHint()">💡 힌트 보기</button>
+        </div>
+        <div class="top-bar-right">
+          <button class="btn btn-admin" onclick="openAdmin()">⚙️ 난이도 설정</button>
+        </div>
       </div>
 
       <div class="question-card">
         <div class="question-info">
-          <div class="question-title" id="levelTitle">1레벨 - 단일 지폐 찾기</div>
-          <div class="question-amount" id="targetAmountText">천 원 (1,000원) 찾아보기</div>
+          <div class="question-title" id="levelTitle">동전 학습 - 1레벨</div>
+          <div class="question-amount" id="targetAmountText">동전을 모두 찾으세요</div>
         </div>
         <button class="btn btn-next-top" onclick="nextProblem()">다른 문제 풀기 ➡️</button>
       </div>
@@ -453,12 +419,12 @@
           <div class="success-text" id="successText">🎉 정답입니다! 참 잘했어요!</div>
           <div class="success-buttons">
             <button class="btn btn-alt" id="altBtn" onclick="startAlternativeWay()" style="display:none;">다른 방법으로 만들기</button>
-            <button class="btn btn-next" onclick="nextProblem()">다음 문제 ➡️</button>
+            <button class="btn btn-next" id="nextBtn" onclick="nextProblem()">다음 문제 ➡️</button>
           </div>
         </div>
 
         <div class="drop-zone-header">
-          <div>내놓은 지폐 <span id="noteCount" style="font-weight:bold;">0</span>장</div>
+          <div>내놓은 화폐 <span id="noteCount" style="font-weight:bold;">0</span>개</div>
           <div class="current-sum" id="currentSumText">모은 금액: 0원</div>
         </div>
 
@@ -467,41 +433,23 @@
 
       <div style="display: flex; gap: 10px;">
         <div class="delete-zone" id="deleteZone" style="flex: 1;">
-          🗑️ 지폐를 여기로 끌어다 놓거나 터치하면 삭제됩니다
+          🗑️ 화폐를 여기로 끌어다 놓거나 터치하면 삭제됩니다
         </div>
-        <button class="btn btn-reset" onclick="resetCurrentAttempt()" style="padding: 0 20px; font-size: 1.1rem;">전체 지우기</button>
+        <button class="btn btn-reset" onclick="resetCurrentAttempt()" style="padding: 0 20px; font-size: 1.05rem;">전체 지우기</button>
       </div>
     </div>
 
     <div class="right-panel">
-      <div class="palette-title">💵 지폐 선택</div>
-      <div class="money-palette">
-        <div class="money-item" data-value="1000" onpointerdown="handlePointerDown(event, 1000)">
-          <img src="https://v1.padlet.pics/3/image.webp?t=c_limit%2Cdpr_2%2Ch_330%2Cw_644&url=https%3A%2F%2Fu1.padletusercontent.com%2Fuploads%2Fpadlet-uploads-usc1%2F1041270546%2F5ceceee2e4c66298833991f02f7c8d07%2F1000.png%3Fexpiry_token%3D5WaHZRdGG3LkUVQGy3SZ-zdRtq89aJeottSBaF_Hii8dmxJqYDvE2-MDbblcM-ZrVekXW99RReKkJFIoMoKioxBlMBWYZI4r4GhiR0XPg4WDENtfxQgITjMW_8wcpxjrMParG_cuZaBzGbDgds_1ZmDMMdZtElyaAx2It13HpU7dyMuTI824hegGOboX2JVN5bS_vP_KZACfoOF1wK4OeQ%3D%3D" class="money-img" alt="천원" />
-          <div class="money-label">1,000원</div>
-        </div>
-
-        <div class="money-item" data-value="5000" onpointerdown="handlePointerDown(event, 5000)">
-          <img src="https://v1.padlet.pics/3/image.webp?t=c_limit%2Cdpr_2%2Ch_333%2Cw_697&url=https%3A%2F%2Fu1.padletusercontent.com%2Fuploads%2Fpadlet-uploads-usc1%2F1041270546%2F869c94d300d93fb5f3c405d85d8ec67d%2F5000.png%3Fexpiry_token%3D5WaHZRdGG3LkUVQGy3SZ-zdRtq89aJeottSBaF_Hii8dmxJqYDvE2-MDbblcM-ZrVekXW99RReKkJFIoMoKioxBlMBWYZI4r4GhiR0XPg4WVPMI7pRC2lE47NiHm97_unW0FPEoGyjzHB5HeQRFtHNoYDX3pbMDWgKutoeipSLbCZiZ-4RIbdztWWK50ip7PuQtrHuye0mMbNI09dZsd8g%3D%3D" class="money-img" alt="오천원" />
-          <div class="money-label">5,000원</div>
-        </div>
-
-        <div class="money-item" data-value="10000" onpointerdown="handlePointerDown(event, 10000)">
-          <img src="https://v1.padlet.pics/3/image.webp?t=c_limit%2Cdpr_2%2Ch_311%2Cw_771&url=https%3A%2F%2Fu1.padletusercontent.com%2Fuploads%2Fpadlet-uploads-usc1%2F1041270546%2Fea4291be165eb24a43b7ce81b809dc51%2F10000.png%3Fexpiry_token%3D5WaHZRdGG3LkUVQGy3SZ-zdRtq89aJeottSBaF_Hii8dmxJqYDvE2-MDbblcM-ZrVekXW99RReKkJFIoMoKioxBlMBWYZI4r4GhiR0XPg4UcW1p6vReKhTeIgWBSME0mXTMttxLVq35Qhk18kAnp8vD_kGD9oW5DYSyq1-TnWMQ3DkGih0GxE_pnlQCffCAutaL5HpCAJZ698_IwzVcPrA%3D%3D" class="money-img is-10000" alt="만원" />
-          <div class="money-label">10,000원</div>
-        </div>
-      </div>
+      <div class="palette-title">💰 화폐 선택</div>
+      <div class="money-palette" id="moneyPalette"></div>
     </div>
   </div>
 
+  <!-- 난이도 설정 모달 -->
   <div class="admin-modal hidden" id="adminModal">
     <div class="admin-content">
-      <div class="admin-title">⚙️ 난이도 레벨 설정</div>
-      <div class="level-options">
-        <button class="level-btn" id="lvl1" onclick="selectLevel(1)">1레벨 : 천원, 오천원, 만원 찾기</button>
-        <button class="level-btn" id="lvl2" onclick="selectLevel(2)">2레벨 : 10,000원 이하 금액 만들기</button>
-        <button class="level-btn" id="lvl3" onclick="selectLevel(3)">3레벨 : 20,000원 이하 금액 만들기</button>
-      </div>
+      <div class="admin-title" id="adminTitle">⚙️ 난이도 레벨 설정</div>
+      <div class="level-options" id="levelOptions"></div>
       <div style="text-align: right;">
         <button class="btn btn-action" onclick="closeAdmin()">닫기</button>
       </div>
@@ -510,127 +458,318 @@
 
   <script>
     const MONEY_IMAGES = {
-      1000: "https://v1.padlet.pics/3/image.webp?t=c_limit%2Cdpr_2%2Ch_330%2Cw_644&url=https%3A%2F%2Fu1.padletusercontent.com%2Fuploads%2Fpadlet-uploads-usc1%2F1041270546%2F5ceceee2e4c66298833991f02f7c8d07%2F1000.png%3Fexpiry_token%3D5WaHZRdGG3LkUVQGy3SZ-zdRtq89aJeottSBaF_Hii8dmxJqYDvE2-MDbblcM-ZrVekXW99RReKkJFIoMoKioxBlMBWYZI4r4GhiR0XPg4WDENtfxQgITjMW_8wcpxjrMParG_cuZaBzGbDgds_1ZmDMMdZtElyaAx2It13HpU7dyMuTI824hegGOboX2JVN5bS_vP_KZACfoOF1wK4OeQ%3D%3D",
-      5000: "https://v1.padlet.pics/3/image.webp?t=c_limit%2Cdpr_2%2Ch_333%2Cw_697&url=https%3A%2F%2Fu1.padletusercontent.com%2Fuploads%2Fpadlet-uploads-usc1%2F1041270546%2F869c94d300d93fb5f3c405d85d8ec67d%2F5000.png%3Fexpiry_token%3D5WaHZRdGG3LkUVQGy3SZ-zdRtq89aJeottSBaF_Hii8dmxJqYDvE2-MDbblcM-ZrVekXW99RReKkJFIoMoKioxBlMBWYZI4r4GhiR0XPg4WVPMI7pRC2lE47NiHm97_unW0FPEoGyjzHB5HeQRFtHNoYDX3pbMDWgKutoeipSLbCZiZ-4RIbdztWWK50ip7PuQtrHuye0mMbNI09dZsd8g%3D%3D",
-      10000: "https://v1.padlet.pics/3/image.webp?t=c_limit%2Cdpr_2%2Ch_311%2Cw_771&url=https%3A%2F%2Fu1.padletusercontent.com%2Fuploads%2Fpadlet-uploads-usc1%2F1041270546%2Fea4291be165eb24a43b7ce81b809dc51%2F10000.png%3Fexpiry_token%3D5WaHZRdGG3LkUVQGy3SZ-zdRtq89aJeottSBaF_Hii8dmxJqYDvE2-MDbblcM-ZrVekXW99RReKkJFIoMoKioxBlMBWYZI4r4GhiR0XPg4UcW1p6vReKhTeIgWBSME0mXTMttxLVq35Qhk18kAnp8vD_kGD9oW5DYSyq1-TnWMQ3DkGih0GxE_pnlQCffCAutaL5HpCAJZ698_IwzVcPrA%3D%3D"
+      10: "https://i.postimg.cc/0j6gsXxm/10.png",
+      50: "https://i.postimg.cc/Rh2kV1VG/50.png",
+      100: "https://i.postimg.cc/4yjDNvxs/100.png",
+      500: "https://i.postimg.cc/9XS5p2tS/500.png",
+      1000: "https://i.postimg.cc/pV1x6zx5/1000.png",
+      5000: "https://i.postimg.cc/pdxtFBYH/5000.png",
+      10000: "https://i.postimg.cc/R0RxQnX3/10000.png",
+      50000: "https://i.postimg.cc/zfLP3b4q/50000.jpg"
     };
 
-    const AMOUNT_TEXTS = {
-      1000: "천 원 (1,000원)",
-      5000: "오천 원 (5,000원)",
-      10000: "만 원 (10,000원)"
+    const MONEY_LABELS = {
+      10: "10원", 50: "50원", 100: "100원", 500: "500원",
+      1000: "1,000원", 5000: "5,000원", 10000: "10,000원", 50000: "50,000원"
     };
 
+    const COIN_VALUES = [10, 50, 100, 500];
+
+    const LEVEL_CONFIGS = {
+      coin: {
+        title: "🪙 동전 학습",
+        levels: [
+          { id: 1, name: "1레벨 : 동전과 지폐 구별하기" },
+          { id: 2, name: "2레벨 : 단일 동전 명칭 알고 찾기" },
+          { id: 3, name: "3레벨 : 1,000원 이하 금액 만들기" }
+        ]
+      },
+      bill: {
+        title: "💵 지폐 학습",
+        levels: [
+          { id: 1, name: "1레벨 : 단일 지폐 찾기" },
+          { id: 2, name: "2레벨 : 10,000원 이하 금액 만들기" },
+          { id: 3, name: "3레벨 : 20,000원 이하 금액 만들기" },
+          { id: 4, name: "4레벨 : 100,000원 이하 금액 만들기 (5만원권 포함)" }
+        ]
+      },
+      calc: {
+        title: "🛍️ 화폐 계산",
+        levels: [
+          { id: 1, name: "1레벨 : 지폐와 동전 함께 세어 금액 만들기" },
+          { id: 2, name: "2레벨 : 거스름돈 계산하기 (지폐만 사용)" },
+          { id: 3, name: "3레벨 : 거스름돈 계산하기 (동전 포함)" }
+        ]
+      }
+    };
+
+    let currentCategory = 'coin';
     let currentLevel = 1;
-    let targetAmount = 1000;
+    let targetAmount = 0;
     let currentSum = 0;
     let placedNotes = [];
-    let methodIndex = 0; 
-    let availableMethods = []; 
-    let usedCombinations = []; 
+    let methodIndex = 0;
+    let availableMethods = [];
+    let usedCombinations = [];
     let isHintVisible = false;
     let noteIdCounter = 0;
 
-    const dropZone = document.getElementById('dropZone');
-    const dropZoneContainer = document.getElementById('dropZoneContainer');
-    const deleteZone = document.getElementById('deleteZone');
-    const successBanner = document.getElementById('successBanner');
-    const successText = document.getElementById('successText');
-    const altBtn = document.getElementById('altBtn');
+    let coinLvl1Toggle = false;
+    let coinLvl1TargetType = 'coin';
+    let coinLvl1BoardItems = [];
 
-    window.onload = () => {
+    let lastInputTime = 0;
+    function isDebounced() {
+      const now = Date.now();
+      if (now - lastInputTime < 180) return true;
+      lastInputTime = now;
+      return false;
+    }
+
+    function startCategory(cat) {
+      currentCategory = cat;
+      currentLevel = 1;
+      coinLvl1Toggle = false;
+      document.getElementById('homeScreen').classList.add('hidden');
+      document.getElementById('appContainer').classList.remove('hidden');
       updateLevelUI();
       nextProblem();
-    };
+    }
+
+    function goHome() {
+      cleanupGhost();
+      document.getElementById('appContainer').classList.add('hidden');
+      document.getElementById('homeScreen').classList.remove('hidden');
+      closeAdmin();
+    }
+
+    function openAdmin() {
+      const modal = document.getElementById('adminModal');
+      const container = document.getElementById('levelOptions');
+      document.getElementById('adminTitle').innerText = `⚙️ ${LEVEL_CONFIGS[currentCategory].title} 난이도 설정`;
+      container.innerHTML = '';
+
+      LEVEL_CONFIGS[currentCategory].levels.forEach(lvl => {
+        const btn = document.createElement('button');
+        btn.className = `level-btn ${lvl.id === currentLevel ? 'active' : ''}`;
+        btn.innerText = lvl.name;
+        btn.onclick = () => {
+          currentLevel = lvl.id;
+          updateLevelUI();
+          closeAdmin();
+          nextProblem();
+        };
+        container.appendChild(btn);
+      });
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeAdmin() {
+      document.getElementById('adminModal').classList.add('hidden');
+    }
+
+    function updateLevelUI() {
+      const cfg = LEVEL_CONFIGS[currentCategory];
+      const curLvlObj = cfg.levels.find(l => l.id === currentLevel);
+      document.getElementById('levelTitle').innerText = `${cfg.title} - ${curLvlObj.name}`;
+      updatePalette();
+    }
+
+    function updatePalette() {
+      const palette = document.getElementById('moneyPalette');
+      palette.innerHTML = '';
+      let availableValues = [];
+
+      if (currentCategory === 'coin') {
+        if (currentLevel === 1 || currentLevel === 2) {
+          availableValues = [10, 50, 100, 500, 1000, 5000, 10000, 50000];
+        } else {
+          availableValues = [100, 500];
+        }
+      } else if (currentCategory === 'bill') {
+        if (currentLevel === 4) {
+          availableValues = [1000, 5000, 10000, 50000];
+        } else {
+          availableValues = [1000, 5000, 10000];
+        }
+      } else if (currentCategory === 'calc') {
+        availableValues = [100, 500, 1000, 5000, 10000, 50000];
+      }
+
+      availableValues.forEach(val => {
+        const isCoin = COIN_VALUES.includes(val);
+        const item = document.createElement('div');
+        item.className = 'money-item';
+        item.onclick = () => addMoney(val);
+        item.onpointerdown = (e) => handlePointerDown(e, val);
+
+        item.innerHTML = `
+          <img src="${MONEY_IMAGES[val]}" class="money-img ${isCoin ? 'is-coin' : ''}" alt="${MONEY_LABELS[val]}" />
+          <div class="money-label">${MONEY_LABELS[val]}</div>
+        `;
+        palette.appendChild(item);
+      });
+    }
 
     function nextProblem() {
+      cleanupGhost();
       resetCurrentAttempt();
+      hideHint();
       methodIndex = 0;
       usedCombinations = [];
       hideSuccessBanner();
 
-      if (currentLevel === 1) {
-        const singleValues = [1000, 5000, 10000];
-        targetAmount = singleValues[Math.floor(Math.random() * singleValues.length)];
-        document.getElementById('targetAmountText').innerText = `${AMOUNT_TEXTS[targetAmount]} 찾아보기`;
-      } else if (currentLevel === 2) {
-        const steps = Math.floor(Math.random() * 10) + 1;
-        targetAmount = steps * 1000;
-        document.getElementById('targetAmountText').innerText = `${formatKoreanAmount(targetAmount)} (${targetAmount.toLocaleString()}원)`;
-      } else if (currentLevel === 3) {
-        const steps = Math.floor(Math.random() * 20) + 1;
-        targetAmount = steps * 1000;
-        document.getElementById('targetAmountText').innerText = `${formatKoreanAmount(targetAmount)} (${targetAmount.toLocaleString()}원)`;
+      if (currentCategory === 'coin') {
+        if (currentLevel === 1) {
+          coinLvl1TargetType = coinLvl1Toggle ? 'bill' : 'coin';
+          coinLvl1Toggle = !coinLvl1Toggle;
+
+          targetAmount = 0; 
+          document.getElementById('targetAmountText').innerText = 
+            coinLvl1TargetType === 'coin' ? "동전을 모두 찾으세요" : "지폐를 모두 찾으세요";
+          
+          coinLvl1BoardItems = [10, 50, 100, 500, 1000, 5000, 10000, 50000].sort(() => Math.random() - 0.5);
+          availableMethods = [coinLvl1BoardItems];
+        } else if (currentLevel === 2) {
+          const coinOpts = [10, 50, 100, 500];
+          targetAmount = coinOpts[Math.floor(Math.random() * coinOpts.length)];
+          document.getElementById('targetAmountText').innerText = `${MONEY_LABELS[targetAmount]} 동전을 찾으세요`;
+          availableMethods = [[targetAmount]];
+        } else if (currentLevel === 3) {
+          const steps = Math.floor(Math.random() * 9) + 1;
+          targetAmount = steps * 100;
+          document.getElementById('targetAmountText').innerText = `${targetAmount.toLocaleString()}원 만들기`;
+          availableMethods = generateCoinMethods(targetAmount);
+        }
+      } else if (currentCategory === 'bill') {
+        if (currentLevel === 1) {
+          const opts = [1000, 5000, 10000];
+          targetAmount = opts[Math.floor(Math.random() * opts.length)];
+          document.getElementById('targetAmountText').innerText = `${MONEY_LABELS[targetAmount]} 지폐를 찾으세요`;
+          availableMethods = [[targetAmount]];
+        } else if (currentLevel === 2) {
+          targetAmount = (Math.floor(Math.random() * 10) + 1) * 1000;
+          document.getElementById('targetAmountText').innerText = `${formatKoreanAmount(targetAmount)} (${targetAmount.toLocaleString()}원)`;
+          availableMethods = generateBillMethods(targetAmount);
+        } else if (currentLevel === 3) {
+          targetAmount = (Math.floor(Math.random() * 20) + 1) * 1000;
+          document.getElementById('targetAmountText').innerText = `${formatKoreanAmount(targetAmount)} (${targetAmount.toLocaleString()}원)`;
+          availableMethods = generateBillMethods(targetAmount);
+        } else if (currentLevel === 4) {
+          targetAmount = (Math.floor(Math.random() * 10) + 1) * 10000;
+          document.getElementById('targetAmountText').innerText = `${formatKoreanAmount(targetAmount)} (${targetAmount.toLocaleString()}원)`;
+          availableMethods = generateBillMethods(targetAmount);
+        }
+      } else if (currentCategory === 'calc') {
+        if (currentLevel === 1) {
+          targetAmount = (Math.floor(Math.random() * 15) + 1) * 1000 + (Math.floor(Math.random() * 9) + 1) * 100;
+          document.getElementById('targetAmountText').innerText = `${targetAmount.toLocaleString()}원 만들기`;
+        } else if (currentLevel === 2) {
+          const itemPrice = (Math.floor(Math.random() * 8) + 1) * 1000;
+          const paidBill = itemPrice <= 4000 ? 5000 : (itemPrice <= 9000 ? 10000 : 50000);
+          targetAmount = paidBill - itemPrice;
+          document.getElementById('targetAmountText').innerText = `${paidBill.toLocaleString()}원을 내고 ${itemPrice.toLocaleString()}원 물건 살 때 거스름돈 (${targetAmount.toLocaleString()}원)`;
+        } else if (currentLevel === 3) {
+          const itemPrice = (Math.floor(Math.random() * 8) + 1) * 1000 + (Math.floor(Math.random() * 9) + 1) * 100;
+          const paidBill = itemPrice <= 4900 ? 5000 : (itemPrice <= 9900 ? 10000 : 50000);
+          targetAmount = paidBill - itemPrice;
+          document.getElementById('targetAmountText').innerText = `${paidBill.toLocaleString()}원을 내고 ${itemPrice.toLocaleString()}원 물건 살 때 거스름돈 (${targetAmount.toLocaleString()}원)`;
+        }
+        availableMethods = generateBillMethods(targetAmount);
       }
 
-      availableMethods = generateMethodsForAmount(targetAmount);
       renderBoard();
     }
 
-    function generateMethodsForAmount(amount) {
-      if (currentLevel === 1) {
-        return [[amount]];
-      }
-
+    function generateCoinMethods(amount) {
       let methods = [];
-
       let m1 = [];
       let rem = amount;
-      while (rem >= 10000) { m1.push(10000); rem -= 10000; }
-      while (rem >= 5000) { m1.push(5000); rem -= 5000; }
-      while (rem >= 1000) { m1.push(1000); rem -= 1000; }
+      while (rem >= 500) { m1.push(500); rem -= 500; }
+      while (rem >= 100) { m1.push(100); rem -= 100; }
       methods.push(m1);
 
-      if (m1.includes(5000)) {
+      if (m1.includes(500)) {
         let m2 = [];
         let splitDone = false;
         for (let coin of m1) {
-          if (coin === 5000 && !splitDone) {
-            for (let i = 0; i < 5; i++) m2.push(1000);
+          if (coin === 500 && !splitDone) {
+            for (let i = 0; i < 5; i++) m2.push(100);
             splitDone = true;
           } else {
             m2.push(coin);
           }
         }
+        m2.sort((a, b) => b - a);
+        methods.push(m2);
+      }
+      return methods.slice(0, 3);
+    }
+
+    function generateBillMethods(amount) {
+      let methods = [];
+      let m1 = [];
+      let rem = amount;
+      while (rem >= 50000) { m1.push(50000); rem -= 50000; }
+      while (rem >= 10000) { m1.push(10000); rem -= 10000; }
+      while (rem >= 5000) { m1.push(5000); rem -= 5000; }
+      while (rem >= 1000) { m1.push(1000); rem -= 1000; }
+      while (rem >= 500) { m1.push(500); rem -= 500; }
+      while (rem >= 100) { m1.push(100); rem -= 100; }
+      methods.push(m1);
+
+      let base = [...m1];
+      if (base.includes(10000)) {
+        let m2 = [];
+        let splitDone = false;
+        for (let b of base) {
+          if (b === 10000 && !splitDone) {
+            m2.push(5000); m2.push(5000);
+            splitDone = true;
+          } else { m2.push(b); }
+        }
+        m2.sort((a, b) => b - a);
+        methods.push(m2);
+
+        let m3 = [];
+        let split10kDone = false;
+        for (let b of base) {
+          if (b === 10000 && !split10kDone) {
+            for(let i=0; i<10; i++) m3.push(1000);
+            split10kDone = true;
+          } else { m3.push(b); }
+        }
+        m3.sort((a, b) => b - a);
+        methods.push(m3);
+      } else if (base.includes(5000)) {
+        let m2 = [];
+        let splitDone = false;
+        for (let b of base) {
+          if (b === 5000 && !splitDone) {
+            for(let i=0; i<5; i++) m2.push(1000);
+            splitDone = true;
+          } else { m2.push(b); }
+        }
+        m2.sort((a, b) => b - a);
         methods.push(m2);
       }
 
-      let baseForM3 = methods[methods.length - 1];
-      if (baseForM3.includes(10000)) {
-        let m3 = [];
-        let splitDone = false;
-        for (let coin of baseForM3) {
-          if (coin === 10000 && !splitDone) {
-            m3.push(5000);
-            m3.push(5000);
-            splitDone = true;
-          } else {
-            m3.push(coin);
-          }
+      // 고유 조합만 필터링하여 반환
+      let uniqueMethods = [];
+      methods.forEach(m => {
+        if (!uniqueMethods.some(existing => isSameCombo(existing, m))) {
+          uniqueMethods.push(m);
         }
-        methods.push(m3);
-      } else if (m1.includes(10000) && !methods.some(m => isSameCombo(m, m1))) {
-        let m3 = [];
-        let splitDone = false;
-        for (let coin of m1) {
-          if (coin === 10000 && !splitDone) {
-            m3.push(5000);
-            m3.push(5000);
-            splitDone = true;
-          } else {
-            m3.push(coin);
-          }
-        }
-        methods.push(m3);
-      }
+      });
 
-      return methods.slice(0, 3);
+      return uniqueMethods;
     }
 
     function isSameCombo(arr1, arr2) {
       if (arr1.length !== arr2.length) return false;
-      let s1 = [...arr1].sort().join(',');
-      let s2 = [...arr2].sort().join(',');
+      let s1 = [...arr1].sort((a,b)=>a-b).join(',');
+      let s2 = [...arr2].sort((a,b)=>a-b).join(',');
       return s1 === s2;
     }
 
@@ -639,28 +778,53 @@
       let result = "";
       let man = Math.floor(amount / 10000);
       let cheon = Math.floor((amount % 10000) / 1000);
-
+      let baek = Math.floor((amount % 1000) / 100);
       if (man > 0) result += (man === 1 ? "만 " : `${man}만 `);
       if (cheon > 0) result += (cheon === 1 ? "천 " : `${cheon}천 `);
+      if (baek > 0) result += (baek === 1 ? "백 " : `${baek}백 `);
       return result.trim() + " 원";
     }
 
+    function isSingleSearchMode() {
+      return (currentCategory === 'coin' && currentLevel === 2) || (currentCategory === 'bill' && currentLevel === 1);
+    }
+
     function addMoney(value) {
-      placedNotes.push({
-        id: ++noteIdCounter,
-        value: value
-      });
+      if (isDebounced()) return;
+      cleanupGhost();
+
+      if (isSingleSearchMode()) {
+        if (value !== targetAmount) {
+          showWrongBanner(`⚠️ ${MONEY_LABELS[targetAmount]}을(를) 찾아보세요! 다시 시도해 볼까요?`);
+          return;
+        } else {
+          hideSuccessBanner();
+          placedNotes = [{ id: ++noteIdCounter, value: value }];
+          renderBoard();
+          checkAnswer();
+          return;
+        }
+      }
+
+      if (currentCategory === 'coin' && currentLevel === 1) {
+        if (placedNotes.some(n => n.value === value)) return;
+      }
+
+      placedNotes.push({ id: ++noteIdCounter, value: value });
       renderBoard();
       checkAnswer();
     }
 
     function removeMoney(id) {
+      if (isDebounced()) return;
+      cleanupGhost();
       placedNotes = placedNotes.filter(n => n.id !== id);
       renderBoard();
       checkAnswer();
     }
 
     function resetCurrentAttempt() {
+      cleanupGhost();
       placedNotes = [];
       hideHint();
       renderBoard();
@@ -668,26 +832,63 @@
     }
 
     function calculateHintNotes() {
-      if (methodIndex < availableMethods.length) {
-        return availableMethods[methodIndex];
+      // availableMethods 중에서 현재 설정된 methodIndex의 힌트를 반환하되,
+      // 만약 이미 사용자가 제출한 조합(usedCombinations)과 일치한다면 중복되지 않는 다른 방법을 찾아 반환
+      if (availableMethods.length === 0) return [];
+      
+      let candidate = availableMethods[methodIndex % availableMethods.length];
+      
+      // 만약 현재 후보 힌트가 이미 사용자가 시도했던 조합과 똑같다면 다음 인덱스로 건너뜀
+      let safetyCount = 0;
+      while (usedCombinations.some(c => isSameCombo(c, candidate)) && safetyCount < availableMethods.length) {
+        methodIndex = (methodIndex + 1) % availableMethods.length;
+        candidate = availableMethods[methodIndex % availableMethods.length];
+        safetyCount++;
       }
-      return availableMethods[availableMethods.length - 1];
+      
+      return candidate;
     }
 
     function renderBoard() {
       dropZone.innerHTML = "";
       currentSum = 0;
-
       placedNotes.forEach(n => currentSum += n.value);
 
       document.getElementById('noteCount').innerText = placedNotes.length;
       const sumText = document.getElementById('currentSumText');
-      sumText.innerText = `모은 금액: ${currentSum.toLocaleString()}원`;
 
-      if (currentSum > targetAmount) {
-        sumText.classList.add('exceeded');
-      } else {
+      if (currentCategory === 'coin' && currentLevel === 1) {
+        sumText.innerText = "올바른 화폐를 찾아내세요";
         sumText.classList.remove('exceeded');
+      } else {
+        sumText.innerText = `모은 금액: ${currentSum.toLocaleString()}원`;
+        if (targetAmount > 0 && currentSum > targetAmount) {
+          sumText.classList.add('exceeded');
+        } else {
+          sumText.classList.remove('exceeded');
+        }
+      }
+
+      if (currentCategory === 'coin' && currentLevel === 1) {
+        coinLvl1BoardItems.forEach(val => {
+          const isCoin = COIN_VALUES.includes(val);
+          const slot = document.createElement('div');
+          let slotClass = `money-slot ${isCoin ? 'is-coin' : (val >= 10000 ? 'is-10000' : '')}`;
+          
+          if (isHintVisible) {
+            if (coinLvl1TargetType === 'coin' && isCoin) slotClass += ' hint-border-coin';
+            else if (coinLvl1TargetType === 'bill' && !isCoin) slotClass += ' hint-border-bill';
+          }
+          slot.className = slotClass;
+
+          const matchNote = placedNotes.find(n => n.value === val);
+          if (matchNote) {
+            const img = createPlacedMoneyImg(matchNote);
+            slot.appendChild(img);
+          }
+          dropZone.appendChild(slot);
+        });
+        return;
       }
 
       if (isHintVisible) {
@@ -695,12 +896,13 @@
         let unassignedNotes = [...placedNotes];
 
         hintNotes.forEach((hintVal) => {
+          const isCoin = COIN_VALUES.includes(hintVal);
           const slot = document.createElement('div');
-          slot.className = `money-slot ${hintVal === 10000 ? 'is-10000' : ''}`;
+          slot.className = `money-slot ${isCoin ? 'is-coin' : (hintVal >= 10000 ? 'is-10000' : '')}`;
 
           const hintImg = document.createElement('img');
           hintImg.src = MONEY_IMAGES[hintVal];
-          hintImg.className = `hint-money-img ${hintVal === 10000 ? 'is-10000' : ''}`;
+          hintImg.className = `hint-money-img ${isCoin ? 'is-coin' : (hintVal >= 10000 ? 'is-10000' : '')}`;
           slot.appendChild(hintImg);
 
           const matchIndex = unassignedNotes.findIndex(n => n.value === hintVal);
@@ -709,13 +911,13 @@
             const img = createPlacedMoneyImg(matchedNote);
             slot.appendChild(img);
           }
-
           dropZone.appendChild(slot);
         });
 
         unassignedNotes.forEach(note => {
+          const isCoin = COIN_VALUES.includes(note.value);
           const slot = document.createElement('div');
-          slot.className = `money-slot ${note.value === 10000 ? 'is-10000' : ''}`;
+          slot.className = `money-slot ${isCoin ? 'is-coin' : (note.value >= 10000 ? 'is-10000' : '')}`;
           const img = createPlacedMoneyImg(note);
           slot.appendChild(img);
           dropZone.appendChild(slot);
@@ -723,8 +925,9 @@
 
       } else {
         placedNotes.forEach(note => {
+          const isCoin = COIN_VALUES.includes(note.value);
           const slot = document.createElement('div');
-          slot.className = `money-slot ${note.value === 10000 ? 'is-10000' : ''}`;
+          slot.className = `money-slot ${isCoin ? 'is-coin' : (note.value >= 10000 ? 'is-10000' : '')}`;
           const img = createPlacedMoneyImg(note);
           slot.appendChild(img);
           dropZone.appendChild(slot);
@@ -733,28 +936,63 @@
     }
 
     function createPlacedMoneyImg(note) {
+      const isCoin = COIN_VALUES.includes(note.value);
       const img = document.createElement('img');
       img.src = MONEY_IMAGES[note.value];
-      img.className = `placed-money ${note.value === 10000 ? 'is-10000' : ''}`;
-      img.onclick = () => removeMoney(note.id);
+      img.className = `placed-money ${isCoin ? 'is-coin' : (note.value >= 10000 ? 'is-10000' : '')}`;
+      img.onclick = (e) => { e.stopPropagation(); removeMoney(note.id); };
       img.onpointerdown = (e) => handlePlacedMoneyDrag(e, note.id, note.value);
       return img;
     }
 
     function checkAnswer() {
+      if (currentCategory === 'coin' && currentLevel === 1) {
+        const userVals = placedNotes.map(n => n.value);
+        if (userVals.length === 4 && new Set(userVals).size === 4) {
+          const allCorrect = userVals.every(v => 
+            coinLvl1TargetType === 'coin' ? COIN_VALUES.includes(v) : !COIN_VALUES.includes(v)
+          );
+          if (allCorrect) {
+            showSuccessBanner("🎉 정답입니다! 참 잘했어요!", false);
+          } else {
+            hideSuccessBanner();
+          }
+        } else {
+          hideSuccessBanner();
+        }
+        return;
+      }
+
+      if (isSingleSearchMode()) {
+        if (currentSum === targetAmount && placedNotes.length === 1) {
+          showSuccessBanner("🎉 정답입니다! 참 잘했어요!", false);
+        } else {
+          hideSuccessBanner();
+        }
+        return;
+      }
+
       if (currentSum === targetAmount) {
         const currentCombo = placedNotes.map(n => n.value);
-
         const alreadyUsed = usedCombinations.some(c => isSameCombo(c, currentCombo));
+
         if (alreadyUsed) {
-          showSuccessBanner("아까와 똑같은 방법이에요! 다른 지폐로 만들어볼까요?", true);
+          showSuccessBanner("아까와 똑같은 방법이에요! 다른 방법으로 만들어볼까요?", true);
           return;
         }
 
         usedCombinations.push(currentCombo);
 
-        if (methodIndex + 1 >= availableMethods.length) {
-          showSuccessBanner("🎉 정답입니다! 참 잘했어요!", false);
+        // 사용자가 제출한 조합을 감지하여 다음 힌트는 무조건 다른 방법이 나오도록 인덱스 이동
+        let matchedIndex = availableMethods.findIndex(m => isSameCombo(m, currentCombo));
+        if (matchedIndex !== -1) {
+          methodIndex = (matchedIndex + 1) % availableMethods.length;
+        } else {
+          methodIndex = (methodIndex + 1) % availableMethods.length;
+        }
+
+        if (usedCombinations.length >= availableMethods.length) {
+          showSuccessBanner("🎉 정답입니다! 다양한 방법으로 잘 만들었어요!", false);
         } else {
           showSuccessBanner("🎉 정답입니다! 참 잘했어요!", true);
         }
@@ -764,17 +1002,31 @@
     }
 
     function showSuccessBanner(text, showAltBtn) {
-      successText.innerText = text;
-      altBtn.style.display = showAltBtn ? 'inline-block' : 'none';
+      const successBanner = document.getElementById('successBanner');
+      successBanner.classList.remove('wrong-banner');
+      document.getElementById('successText').innerText = text;
+      document.getElementById('altBtn').style.display = showAltBtn ? 'inline-block' : 'none';
+      document.getElementById('nextBtn').style.display = 'inline-block';
       successBanner.classList.remove('hidden');
     }
 
-    function hideSuccessBanner() {
-      successBanner.classList.add('hidden');
+    function showWrongBanner(text) {
+      const successBanner = document.getElementById('successBanner');
+      successBanner.classList.add('wrong-banner');
+      document.getElementById('successText').innerText = text;
+      document.getElementById('altBtn').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'none';
+      successBanner.classList.remove('hidden');
+    }
+
+    function hideSuccessBanner() { 
+      const successBanner = document.getElementById('successBanner');
+      successBanner.classList.remove('wrong-banner');
+      successBanner.classList.add('hidden'); 
     }
 
     function startAlternativeWay() {
-      methodIndex++; 
+      methodIndex = (methodIndex + 1) % availableMethods.length;
       placedNotes = [];
       hideHint();
       renderBoard();
@@ -782,11 +1034,8 @@
     }
 
     function toggleHint() {
-      if (isHintVisible) {
-        hideHint();
-      } else {
-        showHint();
-      }
+      if (isHintVisible) hideHint();
+      else showHint();
       renderBoard();
     }
 
@@ -797,67 +1046,76 @@
 
     function hideHint() {
       isHintVisible = false;
-      document.getElementById('hintBtn').innerText = "💡 힌트 보기";
+      const btn = document.getElementById('hintBtn');
+      if (btn) btn.innerText = "💡 힌트 보기";
     }
 
     let activeGhost = null;
 
+    function cleanupGhost() {
+      if (activeGhost) {
+        activeGhost.remove();
+        activeGhost = null;
+      }
+      document.querySelectorAll('.dragging-ghost').forEach(el => el.remove());
+    }
+
     function handlePointerDown(e, value) {
       e.preventDefault();
-      
-      // 전자칠판 터치 감도 향상을 위한 포인터 캡처
+      cleanupGhost();
+
       if (e.target.setPointerCapture) {
         try { e.target.setPointerCapture(e.pointerId); } catch(err) {}
       }
 
+      const isCoin = COIN_VALUES.includes(value);
       activeGhost = document.createElement('img');
       activeGhost.src = MONEY_IMAGES[value];
-      activeGhost.className = `dragging-ghost ${value === 10000 ? 'is-10000' : ''}`;
+      activeGhost.className = `dragging-ghost ${isCoin ? 'is-coin' : ''}`;
       document.body.appendChild(activeGhost);
 
       moveGhost(e);
 
-      const onPointerMove = (ev) => {
-        ev.preventDefault();
-        moveGhost(ev);
+      let hasMoved = false;
+      const onPointerMove = (ev) => { 
+        ev.preventDefault(); 
+        hasMoved = true;
+        moveGhost(ev); 
       };
-
+      
       const onPointerUp = (ev) => {
         ev.preventDefault();
         window.removeEventListener('pointermove', onPointerMove);
         window.removeEventListener('pointerup', onPointerUp);
+        window.removeEventListener('pointercancel', onPointerUp);
 
-        if (activeGhost) {
-          activeGhost.remove();
-          activeGhost = null;
-        }
+        cleanupGhost();
 
         const dropRect = dropZoneContainer.getBoundingClientRect();
-        if (
-          ev.clientX >= dropRect.left &&
-          ev.clientX <= dropRect.right &&
-          ev.clientY >= dropRect.top &&
-          ev.clientY <= dropRect.bottom
-        ) {
+        if (ev.clientX >= dropRect.left && ev.clientX <= dropRect.right &&
+            ev.clientY >= dropRect.top && ev.clientY <= dropRect.bottom) {
           addMoney(value);
         }
       };
 
       window.addEventListener('pointermove', onPointerMove, { passive: false });
       window.addEventListener('pointerup', onPointerUp);
+      window.addEventListener('pointercancel', onPointerUp);
     }
 
     function handlePlacedMoneyDrag(e, id, value) {
       e.stopPropagation();
       e.preventDefault();
+      cleanupGhost();
 
       if (e.target.setPointerCapture) {
         try { e.target.setPointerCapture(e.pointerId); } catch(err) {}
       }
 
+      const isCoin = COIN_VALUES.includes(value);
       activeGhost = document.createElement('img');
       activeGhost.src = MONEY_IMAGES[value];
-      activeGhost.className = `dragging-ghost ${value === 10000 ? 'is-10000' : ''}`;
+      activeGhost.className = `dragging-ghost ${isCoin ? 'is-coin' : ''}`;
       document.body.appendChild(activeGhost);
 
       moveGhost(e);
@@ -866,12 +1124,8 @@
         ev.preventDefault();
         moveGhost(ev);
         const delRect = deleteZone.getBoundingClientRect();
-        if (
-          ev.clientX >= delRect.left &&
-          ev.clientX <= delRect.right &&
-          ev.clientY >= delRect.top &&
-          ev.clientY <= delRect.bottom
-        ) {
+        if (ev.clientX >= delRect.left && ev.clientX <= delRect.right &&
+            ev.clientY >= delRect.top && ev.clientY <= delRect.bottom) {
           deleteZone.classList.add('drag-over');
         } else {
           deleteZone.classList.remove('drag-over');
@@ -882,26 +1136,21 @@
         ev.preventDefault();
         window.removeEventListener('pointermove', onPointerMove);
         window.removeEventListener('pointerup', onPointerUp);
+        window.removeEventListener('pointercancel', onPointerUp);
         deleteZone.classList.remove('drag-over');
 
-        if (activeGhost) {
-          activeGhost.remove();
-          activeGhost = null;
-        }
+        cleanupGhost();
 
         const delRect = deleteZone.getBoundingClientRect();
-        if (
-          ev.clientX >= delRect.left &&
-          ev.clientX <= delRect.right &&
-          ev.clientY >= delRect.top &&
-          ev.clientY <= delRect.bottom
-        ) {
+        if (ev.clientX >= delRect.left && ev.clientX <= delRect.right &&
+            ev.clientY >= delRect.top && ev.clientY <= delRect.bottom) {
           removeMoney(id);
         }
       };
 
       window.addEventListener('pointermove', onPointerMove, { passive: false });
       window.addEventListener('pointerup', onPointerUp);
+      window.addEventListener('pointercancel', onPointerUp);
     }
 
     function moveGhost(e) {
@@ -909,34 +1158,6 @@
         activeGhost.style.left = `${e.clientX}px`;
         activeGhost.style.top = `${e.clientY}px`;
       }
-    }
-
-    function openAdmin() {
-      document.getElementById('adminModal').classList.remove('hidden');
-    }
-
-    function closeAdmin() {
-      document.getElementById('adminModal').classList.add('hidden');
-    }
-
-    function selectLevel(lvl) {
-      currentLevel = lvl;
-      updateLevelUI();
-      closeAdmin();
-      nextProblem();
-    }
-
-    function updateLevelUI() {
-      document.querySelectorAll('.level-btn').forEach((btn, idx) => {
-        btn.classList.toggle('active', idx + 1 === currentLevel);
-      });
-
-      const titles = {
-        1: "1레벨 - 단일 지폐 찾기",
-        2: "2레벨 - 10,000원 이하 금액 만들기",
-        3: "3레벨 - 20,000원 이하 금액 만들기"
-      };
-      document.getElementById('levelTitle').innerText = titles[currentLevel];
     }
   </script>
 </body>
