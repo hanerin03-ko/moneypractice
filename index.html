@@ -418,7 +418,7 @@
         <div class="success-banner hidden" id="successBanner">
           <div class="success-text" id="successText">🎉 정답입니다! 참 잘했어요!</div>
           <div class="success-buttons">
-            <button class="btn btn-alt" id="altBtn" onclick="startAlternativeWay()" style="display:none;">다른 방법으로 만들기</button>
+            <button class="btn btn-alt" id="altBtn" onclick="startAlternativeWay()" style="display:inline-block;">다른 방법으로 만들기</button>
             <button class="btn btn-next" id="nextBtn" onclick="nextProblem()">다음 문제 ➡️</button>
           </div>
         </div>
@@ -707,8 +707,11 @@
       return methods.slice(0, 3);
     }
 
+    /* [지폐 조합 생성기: 학생들의 천원 나열식 풀이 및 오천원/만원 다양한 교차 조합 모두 포함] */
     function generateBillMethods(amount) {
       let methods = [];
+      
+      // 1. 큰 화폐 위주 표준 조합
       let m1 = [];
       let rem = amount;
       while (rem >= 50000) { m1.push(50000); rem -= 50000; }
@@ -719,11 +722,25 @@
       while (rem >= 100) { m1.push(100); rem -= 100; }
       methods.push(m1);
 
-      let base = [...m1];
-      if (base.includes(10000)) {
+      // 2. 학생들에게 친숙한 '천원짜리 전부 나열하기' (전체 천원 묶음 조합)를 항상 포함!
+      let allThousands = [];
+      let totalRem = amount;
+      while (totalRem >= 1000) {
+        allThousands.push(1000);
+        totalRem -= 1000;
+      }
+      // 동전 잔돈이 있다면 추가
+      while (totalRem >= 500) { allThousands.push(500); totalRem -= 500; }
+      while (totalRem >= 100) { allThousands.push(100); totalRem -= 100; }
+      if (allThousands.length > 0) {
+        methods.push(allThousands);
+      }
+
+      // 3. 만원권을 오천원권 2장으로 쪼갠 교차 조합
+      if (m1.includes(10000)) {
         let m2 = [];
         let splitDone = false;
-        for (let b of base) {
+        for (let b of m1) {
           if (b === 10000 && !splitDone) {
             m2.push(5000); m2.push(5000);
             splitDone = true;
@@ -731,31 +748,24 @@
         }
         m2.sort((a, b) => b - a);
         methods.push(m2);
+      }
 
+      // 4. 오천원권을 천원권 5장으로 쪼갠 조합
+      let baseForSplit5k = methods[0];
+      if (baseForSplit5k.includes(5000)) {
         let m3 = [];
-        let split10kDone = false;
-        for (let b of base) {
-          if (b === 10000 && !split10kDone) {
-            for(let i=0; i<10; i++) m3.push(1000);
-            split10kDone = true;
+        let splitDone = false;
+        for (let b of baseForSplit5k) {
+          if (b === 5000 && !splitDone) {
+            for(let i = 0; i < 5; i++) m3.push(1000);
+            splitDone = true;
           } else { m3.push(b); }
         }
         m3.sort((a, b) => b - a);
         methods.push(m3);
-      } else if (base.includes(5000)) {
-        let m2 = [];
-        let splitDone = false;
-        for (let b of base) {
-          if (b === 5000 && !splitDone) {
-            for(let i=0; i<5; i++) m2.push(1000);
-            splitDone = true;
-          } else { m2.push(b); }
-        }
-        m2.sort((a, b) => b - a);
-        methods.push(m2);
       }
 
-      // 고유 조합만 필터링하여 반환
+      // 고유 조합만 선별
       let uniqueMethods = [];
       methods.forEach(m => {
         if (!uniqueMethods.some(existing => isSameCombo(existing, m))) {
@@ -832,13 +842,10 @@
     }
 
     function calculateHintNotes() {
-      // availableMethods 중에서 현재 설정된 methodIndex의 힌트를 반환하되,
-      // 만약 이미 사용자가 제출한 조합(usedCombinations)과 일치한다면 중복되지 않는 다른 방법을 찾아 반환
       if (availableMethods.length === 0) return [];
       
       let candidate = availableMethods[methodIndex % availableMethods.length];
       
-      // 만약 현재 후보 힌트가 이미 사용자가 시도했던 조합과 똑같다면 다음 인덱스로 건너뜀
       let safetyCount = 0;
       while (usedCombinations.some(c => isSameCombo(c, candidate)) && safetyCount < availableMethods.length) {
         methodIndex = (methodIndex + 1) % availableMethods.length;
@@ -953,7 +960,7 @@
             coinLvl1TargetType === 'coin' ? COIN_VALUES.includes(v) : !COIN_VALUES.includes(v)
           );
           if (allCorrect) {
-            showSuccessBanner("🎉 정답입니다! 참 잘했어요!", false);
+            showSuccessBanner("🎉 정답입니다! 참 잘했어요!", true); // [다른 방법으로 만들기] 항상 노출
           } else {
             hideSuccessBanner();
           }
@@ -974,16 +981,13 @@
 
       if (currentSum === targetAmount) {
         const currentCombo = placedNotes.map(n => n.value);
-        const alreadyUsed = usedCombinations.some(c => isSameCombo(c, currentCombo));
-
-        if (alreadyUsed) {
-          showSuccessBanner("아까와 똑같은 방법이에요! 다른 방법으로 만들어볼까요?", true);
-          return;
+        
+        // 사용자가 제출한 조합이 이전에 시도한 조합 목록에 없으면 추가
+        if (!usedCombinations.some(c => isSameCombo(c, currentCombo))) {
+          usedCombinations.push(currentCombo);
         }
 
-        usedCombinations.push(currentCombo);
-
-        // 사용자가 제출한 조합을 감지하여 다음 힌트는 무조건 다른 방법이 나오도록 인덱스 이동
+        // 제출한 조합이 availableMethods 중 몇 번째인지 확인하여, 다음 힌트는 무조건 다음 순번 방법으로 지정
         let matchedIndex = availableMethods.findIndex(m => isSameCombo(m, currentCombo));
         if (matchedIndex !== -1) {
           methodIndex = (matchedIndex + 1) % availableMethods.length;
@@ -991,11 +995,7 @@
           methodIndex = (methodIndex + 1) % availableMethods.length;
         }
 
-        if (usedCombinations.length >= availableMethods.length) {
-          showSuccessBanner("🎉 정답입니다! 다양한 방법으로 잘 만들었어요!", false);
-        } else {
-          showSuccessBanner("🎉 정답입니다! 참 잘했어요!", true);
-        }
+        showSuccessBanner("🎉 정답입니다! 다른 방법으로도 만들어볼까요?", true);
       } else {
         hideSuccessBanner();
       }
@@ -1026,9 +1026,10 @@
     }
 
     function startAlternativeWay() {
+      // [다른 방법으로 만들기] 버튼을 누를 때마다 다음 힌트 순번으로 안전하게 넘어감
       methodIndex = (methodIndex + 1) % availableMethods.length;
       placedNotes = [];
-      hideHint();
+      showHint(); // 버튼 누르면 바로 다음 힌트 점선이 켜지도록 표시
       renderBoard();
       hideSuccessBanner();
     }
